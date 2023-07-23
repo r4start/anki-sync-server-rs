@@ -1,0 +1,17 @@
+[Unit]
+Description=Anki sync server daemon
+After=network-online.target
+# If reverse proxy start after it
+#After=network-online.target nginx.service
+Wants=network-online.target
+[Service]
+Type=exec
+ExecStart=/opt/ankisyncd/ankisyncd -c /opt/ankisyncd/ankisyncd.toml
+User=anki
+Group=anki
+SyslogIdentifier=ankisyncd
+WorkingDirectory=/var/lib/ankisyncd/
+
+
+[Install]
+WantedBy=multi-user.target

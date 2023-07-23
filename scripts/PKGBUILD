@@ -1,0 +1,56 @@
+pkgname=anki-sync-server-rs-git
+pkgver=1.1.4
+pkgrel=2
+pkgdesc="A cross-platform Anki sync server. This is a rust (still sqlite C library backed) take on anki sync server, which keep track of the official sync server."
+arch=('any')
+url="https://github.com/ankicommunity/anki-sync-server-rs"
+license=('AGPL')
+provides=('anki-sync-server-rs-git')
+conflicts=('anki-sync-server-rs-git')
+depends=()
+makedepends=('git' 'cargo')
+optdepends=()
+source=('git+https://github.com/ankicommunity/anki-sync-server-rs.git#tag=1.1.4'
+        'ankisyncd.service'
+        'anki.conf')
+sha256sums=('SKIP'
+            'ab909d7d6d8a629fa5ba8ba90a9ba020b3d5c012ad0c6fd95c8c6eb07768ffbf'
+            'e0fccca95f2382a2b52b18de6e188ad2d53521c74896693fa915cba7ea4410d7')
+
+_install_dir_="/opt/ankisyncd"
+
+# build() {
+#   cd "${srcdir}/anki-sync-server-rs"
+#   ./scripts/clone_patch_anki
+#   cargo build --release --features tls
+# }
+
+package() {
+  local _anki_dir_="${srcdir}/anki-sync-server-rs"
+
+  # anki-sync-server-rs package
+  mkdir -p "${pkgdir}${_install_dir_}"
+  strip "${_anki_dir_}/target/release/ankisyncd"
+  cp "${_anki_dir_}/target/release/ankisyncd" "${pkgdir}${_install_dir_}"
+
+  # prepare user and group
+  mkdir -p "${pkgdir}/usr/lib/sysusers.d/"
+  cp "${srcdir}/anki.conf" "${pkgdir}/usr/lib/sysusers.d/"
+
+  # server config
+  sed "s/\(root_dir.*=.*\)/root_dir = \"\/var\/lib\/ankisyncd\"/g" "${_anki_dir_}/ankisyncd.toml" -i
+  cp "${_anki_dir_}/ankisyncd.toml" "${pkgdir}${_install_dir_}"
+
+  # set correct rights
+  chmod -R o-rwx "${pkgdir}${_install_dir_}"
+  chown -R anki:anki "${pkgdir}${_install_dir_}"
+
+  # systemd service
+  mkdir -p "${pkgdir}/usr/lib/systemd/system/"
+  cp "${srcdir}/ankisyncd.service" "${pkgdir}/usr/lib/systemd/system/"
+
+  # set up working dir
+  mkdir -p "${pkgdir}/var/lib/ankisyncd/"
+  chmod -R o-rwx "${pkgdir}/var/lib/ankisyncd/"
+  chown -R anki:anki "${pkgdir}/var/lib/ankisyncd/"
+}
