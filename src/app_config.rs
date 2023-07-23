@@ -5,7 +5,7 @@ use crate::{error::ApplicationError, request};
 
 use crate::app_config;
 use crate::routes::{
-    collecction_sync_handler, media_begin_get, media_begin_post, media_sync_handler,
+    collection_sync_handler, media_begin_get, media_begin_post, media_sync_handler,
 };
 use actix_web::get;
 use actix_web::web;
@@ -62,7 +62,7 @@ pub fn config_app(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/sync/{method}")
             .wrap(request::SyncRequestWrapper)
-            .to(collecction_sync_handler),
+            .to(collection_sync_handler),
     )
     .service(
         web::scope("/msync")

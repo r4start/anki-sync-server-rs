@@ -1,20 +1,6 @@
 #!/bin/sh
 # set -eu
 
-realpath() {
-  OURPWD=$PWD
-  cd "$(dirname "$1")"
-  LINK=$(readlink "$(basename "$1")")
-  while [ "$LINK" ]; do
-    cd "$(dirname "$LINK")"
-    LINK=$(readlink "$(basename "$1")")
-  done
-  REALPATH="$PWD/$(basename "$1")"
-  cd "$OURPWD"
-  echo  "$REALPATH"
-}
-#realpath "$@"
-
 PROJECT_ROOT=$(realpath)   # or result=`myfunc`
 ANKI_REPO_URL=${ANKI_REPO_URL:-"https://github.com/ankitects/anki"}
 ANKI_COMMIT=d9d36078f17a2b4b8b44fcb802eb274911ebabe7
