@@ -161,7 +161,7 @@ pub async fn media_sync_handler(
     }
 }
 
-pub async fn collecction_sync_handler(
+pub async fn collection_sync_handler(
     req: Option<web::ReqData<SyncRequest<Vec<u8>>>>,
     method: web::Path<SyncMethod>, //(endpoint,sync_method)
     server: web::Data<Arc<SimpleServer>>,

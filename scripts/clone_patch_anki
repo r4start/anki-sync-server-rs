@@ -13,7 +13,6 @@ realpath() {
   cd "$OURPWD"
   echo  "$REALPATH"
 }
-#realpath "$@"
 
 PROJECT_ROOT=$(realpath)   # or result=`myfunc`
 ANKI_REPO_URL=${ANKI_REPO_URL:-"https://github.com/ankitects/anki"}
